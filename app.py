@@ -3,6 +3,8 @@ import dash_core_components as dcc
 import dash_html_components as html  
 import plotly.graph_objs as go 
 import pandas as pd  
+import numpy as np 
+import os   
 
 # Tab CSS
 tabs_styles = {
@@ -23,7 +25,11 @@ tab_selected_style = {
     'padding': '6px'
 }
 
+# GET DATA 
+df = pd.read_csv('./data/longform.csv', index_col = 0)
+
 app = dash.Dash(__name__)
+server = app.server 
 
 app.layout = html.Div(children=[
     dcc.Tabs(id="tabs-styled-with-inline", value='DATA1', 
@@ -68,8 +74,128 @@ app.layout = html.Div(children=[
                     html.H3('３．じゃあそのDashってどうやって使うの？')
                 ], style={'textAlign': 'Center', 'fontSize':'3rem', 'marginTop': '10%', 'background': '#EEFFDD', 'color':'limegreen'})
             ]),
+        dcc.Tab(label="DATA4", value="DATA4", style=tab_style, selected_style=tab_selected_style,         children=[
+                    html.Div([
+                        html.H3('都道府県別人口とGDP,一人当たりGDP', style={
+                        'textAlign': 'center'
+                        }),
+                    html.Div([
+                        dcc.Graph(id = 'scatter-chart',
+                        hoverData = {'points': [{'customdata': '大阪府'}]},
+                        ),
+                    dcc.Slider(
+                        id = 'slider-one',
+                        min = df['year'].min(),
+                        max = df['year'].max(),
+                        marks = {i: '{}'.format(i) for i in range(int(df['year'].min()), int(df['year'].max())) if i % 2 == 1},
+                        value = 1955,
+                        )
+                        ], style={
+                            'display': 'inline-block',
+                            'width': '60%',
+                            }),
+                    html.Div([
+                        dcc.Graph(id='chart-one'),
+                        dcc.Graph(id='chart-two'),
+                        dcc.Graph(id='chart-three'),
+                    ],style={
+                        'display': 'inline-block',
+                        'width': '39%'
+                        })
+                    ])
+                ]),
+        dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
+
+            ]),
+        dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
+
+            ]),
     ], style=tabs_styles)
 ])
+
+# Back To DATA4
+@app.callback(
+    dash.dependencies.Output('scatter-chart', 'figure'),
+    [dash.dependencies.Input('slider-one', 'value')]
+)
+def update_graph(selected_year):
+    dff = df[df['year'] == selected_year]
+    dffper = dff[dff['item']=='pergdp']
+    dffgdp = dff[dff['item']== 'GDP']
+    dffpop = dff[dff['item']== 'popu']
+
+    return {
+        'data': [go.Scatter(
+            x = dffper[dffper['area']==i]['value'],
+            y = dffgdp[dffgdp['area']==i]['value'],
+            mode = 'markers',
+            customdata = [i],
+            marker={
+                'size' : dffpop[dffpop['area']==i]['value']/100,
+                'color': dffpop[dffpop['area']==i]['value']/10000,
+            }, 
+            name=i,
+        )for i in dff.area.unique()],
+        'layout': {
+            'height': 900,
+            'xaxis': {
+                'type': 'log',
+                'title': '都道府県別一人当たりGDP(log scale)',
+                'range':[np.log(80), np.log(1200)]
+            },
+            'yaxis': {
+                'type':'log',
+                'title': '都道府県別GDP(log scale)',
+                'range':[np.log(80), np.log(8000)]
+            },
+            'hovermode': 'closest',
+        }
+    }
+
+def create_smallChart(dff, area, name):
+    return {
+        'data':[go.Scatter(
+            x = dff['year'],
+            y = dff['value']
+        )],
+        'layout':{
+            'height': 300,
+            'title': '{}の{}データ'.format(area, name)
+        }
+    }
+
+
+
+@app.callback(
+    dash.dependencies.Output('chart-one', 'figure'),
+    [(dash.dependencies.Input('scatter-chart', 'hoverData'))]
+)
+def createGDP(hoverdata):
+    areaName = hoverdata['points'][0]['customdata']
+    dff = df[df['area']==areaName]
+    dff = dff[dff['item'] == 'GDP']
+    return create_smallChart(dff, areaName, 'GDP')
+
+@app.callback(
+    dash.dependencies.Output('chart-two', 'figure'),
+    [(dash.dependencies.Input('scatter-chart', 'hoverData'))]
+)
+def createPerGDP(hoverdata):
+    areaName = hoverdata['points'][0]['customdata']
+    dff = df[df['area']==areaName]
+    dff = dff[dff['item'] == 'pergdp']
+    return create_smallChart(dff, areaName, 'pergdp')
+
+@app.callback(
+    dash.dependencies.Output('chart-three', 'figure'),
+    [(dash.dependencies.Input('scatter-chart', 'hoverData'))]
+)
+def createPopu(hoverdata):
+    areaName = hoverdata['points'][0]['customdata']
+    dff = df[df['area']==areaName]
+    dff = dff[dff['item'] == 'popu']
+    return create_smallChart(dff, areaName, 'popu')
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)

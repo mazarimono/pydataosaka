@@ -26,9 +26,9 @@ tab_selected_style = {
 app = dash.Dash(__name__)
 
 app.layout = html.Div(children=[
-    dcc.Tabs(id="tabs-styled-with-inline", value='tab1', 
+    dcc.Tabs(id="tabs-styled-with-inline", value='DATA1', 
     children=[
-        dcc.Tab(label="tab1", value='tab1', style=tab_style, selected_style=tab_selected_style,
+        dcc.Tab(label="DATA1", value='DATA1', style=tab_style, selected_style=tab_selected_style,
             children=[
                 html.Div([
                 html.H1('The Power Of Data Visualization', 
@@ -41,11 +41,23 @@ app.layout = html.Div(children=[
                     html.H1('合同会社 長目　CEO  小川　英幸', style={'marginRight': '2%', })
                 ], style={'marginTop':'15%', 'textAlign': 'right', 'color': 'green'})
             ]),
-        dcc.Tab(label="tab2", value='tab2', style=tab_style, selected_style=tab_selected_style,
+        dcc.Tab(label="DATA2", value='DATA2', style=tab_style, selected_style=tab_selected_style,
             children=[
-
+                html.Div([
+                    html.H3('自己紹介', style={'textAlign': 'Center', 'fontSize':'3rem'}),
+                    html.Div([
+                    html.Img(src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mazarimono/20190315/20190315143003.png", style={'marginLeft': '5%', 'display': 'inline-block'}),
+                    html.Div([
+                    html.H3('小川　英幸'),
+                    html.H3('@ogawahideyuki'),
+                    html.H3('はんなりPythonの会、Crypto Kitchenのオーガナイザー'),
+                    html.H3('合同会社 長目（ちょうもく）　経営'),
+                    html.H3('金融・データ・ブロックチェーン'),
+                    ], style={'display': 'inline-block', 'fontSize': '1.5rem', 'marginLeft': '2%'})
+                    ])
+                ])
             ]),
-        dcc.Tab(label="tab3", value='tab3', style=tab_style, selected_style=tab_selected_style,
+        dcc.Tab(label="DATA3", value='DATA3', style=tab_style, selected_style=tab_selected_style,
             children=[
 
             ]),

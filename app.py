@@ -54,7 +54,7 @@ app.layout = html.Div(children=[
         dcc.Tab(label="DATA2", value='DATA2', style=tab_style, selected_style=tab_selected_style,
             children=[
                 html.Div([
-                    html.H3('自己紹介', style={'textAlign': 'Center', 'fontSize':'3rem'}),
+                    html.H3('自己紹介', style={'textAlign': 'Center', 'fontSize':'3rem','background': '#EEFFDD'}),
                     html.Div([
                     html.Img(src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mazarimono/20190315/20190315143003.png" , style={'marginTop':'5%', 'marginLeft': '5%', 'display': 'inline-block', 'height': 500}),
                     html.Div([
@@ -71,7 +71,7 @@ app.layout = html.Div(children=[
     #PAGE3
         dcc.Tab(label="DATA3", value='DATA3', style=tab_style, selected_style=tab_selected_style,
             children=[
-                html.H3('今日話すこと', style={'textAlign': 'Center', 'fontSize':'3rem'}),
+                html.H3('今日話すこと', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
                 html.Div([
                     html.H3('１．データを見ることの重要性と問題点'),
                     html.H3('２．データをみんなで見るのにDash良いですよ'),
@@ -80,7 +80,12 @@ app.layout = html.Div(children=[
             ]),
     #PAGE4
         dcc.Tab(label="DATA4", value="DATA4", style=tab_style, selected_style=tab_selected_style,         children=[
-                html.H3('データを見ることの重要性', style={'textAlign': 'Center', 'fontSize':'3rem'}),
+                html.H3('データを見ることの重要性', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
+                html.Img(src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mazarimono/20190315/20190315175525.png",style={'width': '25%', 'margin': '0 5% 0'})
+            ]),
+    #PAGE5
+        dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
+                html.H3('データを見ることの重要性', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
                 html.Div([
                         dash_table.DataTable(
                             id = 'table1',
@@ -89,11 +94,11 @@ app.layout = html.Div(children=[
                         )
                 ], style={'marginLeft':"15%", 'marginRight': '15%'})
             ]),
-    #PAGE5
-        dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
+    #PAGE6
+        dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
                     html.Div([
                         html.H3('都道府県別人口とGDP,一人当たりGDP', style={
-                        'textAlign': 'center', 'fontSize':'1.5rem'
+                        'textAlign': 'center', 'fontSize':'1.5rem', 'background': '#EEFFDD'
                         }),
                     html.Div([
                         dcc.Graph(id = 'scatter-chart',
@@ -120,10 +125,12 @@ app.layout = html.Div(children=[
                         })
                     ])
                 ]),
-        dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
+    #PAGE7
+        dcc.Tab(label="DATA7", value="DATA7", style=tab_style, selected_style=tab_selected_style,         children=[
 
             ]),
-        dcc.Tab(label="DATA7", value="DATA7", style=tab_style, selected_style=tab_selected_style,         children=[
+    #PAGE8
+        dcc.Tab(label="DATA8", value="DATA8", style=tab_style, selected_style=tab_selected_style,         children=[
 
             ]),
     ], style=tabs_styles)

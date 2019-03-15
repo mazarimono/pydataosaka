@@ -1,6 +1,7 @@
 import dash  
 import dash_core_components as dcc 
 import dash_html_components as html  
+import dash_table 
 import plotly.graph_objs as go 
 import pandas as pd  
 import numpy as np 
@@ -34,6 +35,7 @@ server = app.server
 app.layout = html.Div(children=[
     dcc.Tabs(id="tabs-styled-with-inline", value='DATA1', 
     children=[
+    # PAGE1
         dcc.Tab(label="DATA1", value='DATA1', style=tab_style, selected_style=tab_selected_style,
             children=[
                 html.Div([
@@ -48,6 +50,7 @@ app.layout = html.Div(children=[
                 ], style={'marginTop':'15%', 'textAlign': 'right', 
                 })
             ]),
+    #PAGE2
         dcc.Tab(label="DATA2", value='DATA2', style=tab_style, selected_style=tab_selected_style,
             children=[
                 html.Div([
@@ -58,26 +61,39 @@ app.layout = html.Div(children=[
                     html.H3('ひでやん'),
                     html.H3('@ogawahideyuki'),
                     html.H3('はんなりPythonの会、Crypto Kitchenのオーガナイザー'),
-                    html.H3('合同会社 長目（ちょうもく）　経営'),
+                    html.H3('合同会社 長目（ちょうもく）経営'),
                     html.H3('金融・データ・ブロックチェーンを扱う会社'),
                     html.H3('何事も全力でをモットーに')
                     ], style={'display': 'inline-block', 'fontSize': '2rem', 'marginLeft': '2%', 'color':'limegreen'})
                     ], style = {'background': '#EEFFDD'})
                 ])
             ]),
+    #PAGE3
         dcc.Tab(label="DATA3", value='DATA3', style=tab_style, selected_style=tab_selected_style,
             children=[
                 html.H3('今日話すこと', style={'textAlign': 'Center', 'fontSize':'3rem'}),
                 html.Div([
-                    html.H3('１．データを見るのって重要ですよねぇ'),
+                    html.H3('１．データを見ることの重要性と問題点'),
                     html.H3('２．データをみんなで見るのにDash良いですよ'),
                     html.H3('３．じゃあそのDashってどうやって使うの？')
                 ], style={'textAlign': 'Center', 'fontSize':'3rem', 'marginTop': '10%', 'background': '#EEFFDD', 'color':'limegreen'})
             ]),
+    #PAGE4
         dcc.Tab(label="DATA4", value="DATA4", style=tab_style, selected_style=tab_selected_style,         children=[
+                html.H3('データを見ることの重要性', style={'textAlign': 'Center', 'fontSize':'3rem'}),
+                html.Div([
+                        dash_table.DataTable(
+                            id = 'table1',
+                            columns = [{"name": i, "id": i} for i in df.columns],
+                            data = df[:150].to_dict("rows")
+                        )
+                ], style={'marginLeft':"15%", 'marginRight': '15%'})
+            ]),
+    #PAGE5
+        dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
                     html.Div([
                         html.H3('都道府県別人口とGDP,一人当たりGDP', style={
-                        'textAlign': 'center'
+                        'textAlign': 'center', 'fontSize':'1.5rem'
                         }),
                     html.Div([
                         dcc.Graph(id = 'scatter-chart',
@@ -104,10 +120,10 @@ app.layout = html.Div(children=[
                         })
                     ])
                 ]),
-        dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
+        dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
 
             ]),
-        dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
+        dcc.Tab(label="DATA7", value="DATA7", style=tab_style, selected_style=tab_selected_style,         children=[
 
             ]),
     ], style=tabs_styles)

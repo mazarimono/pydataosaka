@@ -28,6 +28,7 @@ tab_selected_style = {
 
 # GET DATA 
 df = pd.read_csv('./data/longform.csv', index_col = 0)
+dfpergdp = df[df.item=='pergdp']
 
 app = dash.Dash(__name__)
 server = app.server 
@@ -80,22 +81,71 @@ app.layout = html.Div(children=[
             ]),
     #PAGE4
         dcc.Tab(label="DATA4", value="DATA4", style=tab_style, selected_style=tab_selected_style,         children=[
-                html.H3('データを見ることの重要性', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
-                html.Img(src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mazarimono/20190315/20190315175525.png",style={'width': '25%', 'margin': '0 5% 0'})
+                html.H3('データって何？', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
+                html.Div([
+                html.Img(src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mazarimono/20190315/20190315175525.png",style={'width': '25%', 'margin': '0 5% 0', 'display': 'inline'}),
+                html.Div([
+                html.H3('最近話題のこの本'),
+                html.H3('事実に基づき世界を見る！'),
+                html.H3('データを基に世界を正しく見る'),
+                html.H3('データ == 事実')
+                ], style={'display': 'inline-block', 'fontSize': '3rem', 'color': 'limegreen'}),
+                ], style={'background': '#EEFFDD'}),
             ]),
     #PAGE5
         dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
-                html.H3('データを見ることの重要性', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
+                html.H3('データを見る?', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
                 html.Div([
                         dash_table.DataTable(
                             id = 'table1',
                             columns = [{"name": i, "id": i} for i in df.columns],
-                            data = df[:150].to_dict("rows")
+                            data = df[:500].to_dict("rows"),
+                            sorting = True,
+
                         )
                 ], style={'marginLeft':"15%", 'marginRight': '15%'})
             ]),
     #PAGE6
         dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
+                html.Div([
+                    html.H3('都道府県別一人当たりGDP')
+                ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD'}),
+                html.Div([
+                dcc.Graph(
+                    id='pergdpGraph',
+                    figure={
+                    'data': [
+                        go.Scatter(
+                            x = dfpergdp[dfpergdp['area'] == i]['year'],
+                            y = dfpergdp[dfpergdp['area'] == i]['value'],
+                            name = i,
+                            mode = 'lines'
+                        ) for i in dfpergdp.area.unique()
+                    ],
+                    'layout':go.Layout(
+                        xaxis= {'title': '年度'},
+                        yaxis= {'title': '一人当たりGDP'},
+                        height = 700,
+                    )
+                }
+                )
+                ], style ={'height': '80%', 'background': '#EEFFDD'}), 
+            ]),
+    #PAGE7
+        dcc.Tab(label="DATA7", value="DATA7", style=tab_style, selected_style=tab_selected_style,         children=[
+                html.Div([
+                    html.H3('データを情報化するときの問題点', style={'textAlign': 'center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
+                    html.Div([
+                        html.H4('大量にデータがあっても見せれない(特にプレゼン)'),
+                        html.H4('多くの意見を反映しにくい'),
+                        html.H4('凄い発見も当たり前かのように見えてしまう'),
+
+                    ], style = {'textAlign': 'Center', 'fontSize': '3rem', 'background': '#EEFFDD',
+                    'color': 'limegreen', 'padding': '1%'})
+                ])
+            ]),
+    #PAGE8
+        dcc.Tab(label="DATA8", value="DATA8", style=tab_style, selected_style=tab_selected_style,         children=[
                     html.Div([
                         html.H3('都道府県別人口とGDP,一人当たりGDP', style={
                         'textAlign': 'center', 'fontSize':'1.5rem', 'background': '#EEFFDD'
@@ -125,12 +175,12 @@ app.layout = html.Div(children=[
                         })
                     ])
                 ]),
-    #PAGE7
-        dcc.Tab(label="DATA7", value="DATA7", style=tab_style, selected_style=tab_selected_style,         children=[
+    #PAGE9
+        dcc.Tab(label="DATA9", value="DATA9", style=tab_style, selected_style=tab_selected_style,         children=[
 
             ]),
-    #PAGE8
-        dcc.Tab(label="DATA8", value="DATA8", style=tab_style, selected_style=tab_selected_style,         children=[
+    #PAGE10
+        dcc.Tab(label="DATA10", value="DATA10", style=tab_style, selected_style=tab_selected_style,         children=[
 
             ]),
     ], style=tabs_styles)

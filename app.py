@@ -45,7 +45,7 @@ dfcons = pd.read_csv('./data/jp_consumer2014.csv', index_col=0)
 dfcons = dfcons.iloc[:10, :20]
 
 dfkyoto = pd.read_csv('./data/kyoto_hotel_comp1.csv', index_col=0)
-mapbox_access_token = <your key>
+mapbox_access_token = "pk.eyJ1IjoibWF6YXJpbW9ubyIsImEiOiJjanA5Y3IxaWsxeGtmM3dweDh5bjgydGFxIn0.3vrfsqZ_kGPGhi4_npruGg"
 
 
 app = dash.Dash(__name__)

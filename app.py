@@ -26,9 +26,17 @@ tab_selected_style = {
     'padding': '6px'
 }
 
+# Color
+colors = {
+    'background': '#111111',
+    'text': '#7FDBFF'
+}
+
 # GET DATA 
-df = pd.read_csv('./data/longform.csv', index_col = 0)
+df = pd.read_csv('./data/longform2.csv', index_col = 0)
 dfpergdp = df[df.item=='pergdp']
+
+dftable = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
 
 app = dash.Dash(__name__)
 server = app.server 
@@ -146,10 +154,15 @@ app.layout = html.Div(children=[
             ]),
     #PAGE8
         dcc.Tab(label="DATA8", value="DATA8", style=tab_style, selected_style=tab_selected_style,         children=[
+                    html.H1('出来るよ！Dashなら！！', style={'textAlign': 'Center', 'fontSize': '3rem','marginTop': '15%', 'padding': '5%','background': '#EEFFDD', 'color': 'limegreen'})
+            ]),
+    #PAGE9
+        dcc.Tab(label="DATA9", value="DATA9", style=tab_style, selected_style=tab_selected_style,         children=[
                     html.Div([
                         html.H3('都道府県別人口とGDP,一人当たりGDP', style={
-                        'textAlign': 'center', 'fontSize':'1.5rem', 'background': '#EEFFDD'
+                        'textAlign': 'center', 'fontSize':'2.5rem', 'background': '#EEFFDD'
                         }),
+                    html.Div([
                     html.Div([
                         dcc.Graph(id = 'scatter-chart',
                         hoverData = {'points': [{'customdata': '大阪府'}]},
@@ -173,14 +186,251 @@ app.layout = html.Div(children=[
                         'display': 'inline-block',
                         'width': '39%'
                         })
+                    ], style={'background': '#EEFFDD', 'padding':'1%'}),
                     ])
                 ]),
-    #PAGE9
-        dcc.Tab(label="DATA9", value="DATA9", style=tab_style, selected_style=tab_selected_style,         children=[
-
-            ]),
     #PAGE10
         dcc.Tab(label="DATA10", value="DATA10", style=tab_style, selected_style=tab_selected_style,         children=[
+                html.Div([
+                    html.Div([
+
+                    html.H3('Dashの使い方(1)', style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
+                    ]),
+                    html.Div([
+                        html.H3('DashはFlask, React, Plotlyで作られたフレームワーク'),
+                        html.H3('Pythonで使える。グラフ部分はPlotly。'),
+                        html.H3('グラフ部分がインタラクティブに作れる'),
+                        html.H3('ドキュメント　https://dash.plot.ly/')
+                    ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 10, 'color': 'limegreen', 'marginTop': '5%'}),
+                #グラフ１
+                    html.Div([
+                        html.H3('Dashグラフ基本形', style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%'})
+                    ]),
+                    html.Div([
+                        html.H1(children='Hello Dash'),
+
+                        html.Div(children='''
+                                    Dash: A web application framework for Python.
+                                '''),
+
+                        dcc.Graph(
+                            id='example-graph',
+                            figure={
+                            'data': [
+                            {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                            {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
+                            ],
+                            'layout': {
+                            'title': 'Dash Data Visualization'
+                            }
+                            }
+                            )
+                    ], style={'padding': '2%', 'width': '50%', 'margin': '0 auto 0'}),
+
+                    html.Div([
+                        dcc.Markdown('''
+                        
+                        下のようなコードで簡単にグラフを作ることができます。
+                        マウスホバーで何を出すかを指定しなくても、legendを出せとも
+                        書かなくても表示してくれています。
+                        
+
+                        import dash
+                        import dash_core_components as dcc
+                        import dash_html_components as html
+
+                        external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+                        app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+                        app.layout = html.Div(children=[
+                            html.H1(children='Hello Dash'),
+
+                        html.Div([
+                        html.P('Dash: A web application framework for Python.')
+                        ]),
+
+                        dcc.Graph(
+                        id='example-graph',
+                        figure={
+                        'data': [
+                            {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                            {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
+                            ],
+                        'layout': {
+                            'title': 'Dash Data Visualization'
+                            }})
+                        ])
+
+                        if __name__ == '__main__':
+                            app.run_server(debug=True)
+                             
+                             
+                        また、html要素にスタイルを適用することにより、文字色、表示位置を変える
+                        なんてことも簡単にできます。
+
+                        ''')
+                    ], style = {'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 10,}
+                    ),
+                #グラフ2
+                    html.Div([
+                        html.H3('グラフにスタイルを加える', style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%'})
+                    ]),
+                    html.Div([
+                        html.Div(children=[
+                    html.H1(
+                        children='Hello Dash',
+                        style={
+                            'textAlign': 'center',
+                            'color': colors['text']
+                            }
+                        ),
+
+                    html.Div(children='Dash: A web application framework for Python.', style={
+                        'textAlign': 'center',
+                        'color': colors['text']
+                        }),
+
+                    dcc.Graph(
+                        id='example-graph-2',
+                        figure={
+                            'data': [
+                            {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                            {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
+                            ],
+                            'layout': {
+                                'plot_bgcolor': colors['background'],
+                                'paper_bgcolor': colors['background'],
+                            'font': {
+                                'color': colors['text']
+                                }
+                            }
+                        }
+                    )
+                        ], style = {'backgroundColor': colors['background'], 'padding': 10, 'width': '50%', 'margin': '0 auto 0', })
+                        ], style={'padding': 10}),
+                # 解説
+                    html.Div([
+                        dcc.Markdown('''
+                        またもコード
+
+                        import dash
+                        import dash_core_components as dcc
+                        import dash_html_components as html
+
+                        external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+                        app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+                        
+                        # 追加
+                        colors = {
+                            'background': '#111111',
+                            'text': '#7FDBFF'
+                            }
+
+                        app.layout = html.Div(style={'backgroundColor': colors['background'] # 追加}, children=[
+                            html.H1(
+                                children='Hello Dash',
+                                style={
+                                    'textAlign': 'center',
+                                    'color': colors['text'] # 追加
+                                    }
+                                ),
+
+                        html.Div(children='Dash: A web application framework for Python.', style={
+                            'textAlign': 'center',
+                            'color': colors['text']
+                                }), # 追加
+
+                        dcc.Graph(
+                            id='example-graph-2',
+                            figure={
+                            'data': [
+                                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
+                                ],
+                            # 追加
+                            'layout': {
+                                'plot_bgcolor': colors['background'],
+                                'paper_bgcolor': colors['background'],
+                                'font': {
+                                    'color': colors['text']
+                                        }
+                                    }
+                                }
+                            )
+                        ])
+
+                        if __name__ == '__main__':
+                            app.run_server(debug=True)
+                        ''')
+                    ], style = {'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 20, 'marginTop': '5%'}),
+                # show table
+                    html.Div([
+                        html.H3('テーブルデータも簡単に見せられる！', style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%'})
+                    ]),
+                    html.Div([
+                        dash_table.DataTable(
+                            id='table',
+                            columns=[{"name": i, "id": i} for i in dftable.columns],
+                            data=dftable.to_dict("rows"),
+                            sorting= True,
+                            )
+                        ], style={'padding': '5%', 'width': '50%', 'margin': '0 auto 0'}),
+                # comment table
+                    html.Div([
+                        dcc.Markdown('''
+                            テーブルデータのソートも簡単につけられる。
+                            
+                            import dash
+                            import dash_table
+                            import pandas as pd
+
+                            df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
+
+                            app = dash.Dash(__name__)
+
+                            app.layout = dash_table.DataTable(
+                                id='table',
+                                columns=[{"name": i, "id": i} for i in df.columns],
+                                data=df.to_dict("rows"),
+                                sorting= True,
+                                )
+
+                            if __name__ == '__main__':
+                                app.run_server(debug=True)
+
+                        ''')
+                    ], style = {'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 20,}),
+                #まとめ１
+                    html.Div([
+                        html.Div([
+                            html.H3('使い方　ちょっとまとめ')
+                        ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '10%'}),
+                        html.Div([
+                        html.H3('app = Dash(__name__) で入れ物作り！'),
+                        html.H3('app.layout = html.Div()で中身を詰める！'),
+                        html.H3('dash_html_componentsでhtml要素を触る！'),
+                        html.H3('dash_core_componentsでグラフとかツールを触る！'),
+                        html.H3('dash_tableでデータをテーブルでみられる！')
+                    ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 50, 'color': 'limegreen', 'marginTop': '10%'})
+                    ])
+                ])           
+            ]),
+    #PAGE11
+        dcc.Tab(label="DATA11", value="DATA11", style=tab_style, selected_style=tab_selected_style,         children=[
+
+            ]),
+    #PAGE12
+        dcc.Tab(label="DATA12", value="DATA12", style=tab_style, selected_style=tab_selected_style,         children=[
+
+            ]),
+    #PAGE13
+        dcc.Tab(label="DATA13", value="DATA13", style=tab_style, selected_style=tab_selected_style,         children=[
+
+            ]),
+    #PAGE14
+        dcc.Tab(label="DATA14", value="DATA14", style=tab_style, selected_style=tab_selected_style,         children=[
 
             ]),
     ], style=tabs_styles)
@@ -205,12 +455,15 @@ def update_graph(selected_year):
             customdata = [i],
             marker={
                 'size' : dffpop[dffpop['area']==i]['value']/100,
-                'color': dffpop[dffpop['area']==i]['value']/10000,
+                'color': dffpop[dffpop['area']==i]['color'],
             }, 
             name=i,
         )for i in dff.area.unique()],
         'layout': {
-            'height': 900,
+            'height': 800,
+            'title': '{}年の都道府県GDP、一人当たりGDP、人口（円の大きさ）'.format(selected_year),
+            'paper_bgcolor': '#EEFFDD',
+            'fontSize': "2rem",
             'xaxis': {
                 'type': 'log',
                 'title': '都道府県別一人当たりGDP(log scale)',
@@ -233,7 +486,8 @@ def create_smallChart(dff, area, name):
         )],
         'layout':{
             'height': 300,
-            'title': '{}の{}データ'.format(area, name)
+            'title': '{}の{}データ'.format(area, name),
+            'paper_bgcolor': '#EEFFDD',
         }
     }
 

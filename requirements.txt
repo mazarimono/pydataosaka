@@ -5,5 +5,4 @@ dash-table
 plotly
 pandas
 numpy
-json
 gunicorn

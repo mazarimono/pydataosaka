@@ -6,6 +6,7 @@ import plotly.graph_objs as go
 import pandas as pd  
 import numpy as np 
 import os   
+import json 
 
 # Tab CSS
 tabs_styles = {
@@ -34,9 +35,18 @@ colors = {
 
 # GET DATA 
 df = pd.read_csv('./data/longform2.csv', index_col = 0)
+dflong = df.iloc[:15, :]
+
+dfhokkaido = df[df['area']=='北海道']
 dfpergdp = df[df.item=='pergdp']
 
 dftable = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
+dfcons = pd.read_csv('./data/jp_consumer2014.csv', index_col=0)
+dfcons = dfcons.iloc[:10, :20]
+
+dfkyoto = pd.read_csv('./data/kyoto_hotel_comp1.csv', index_col=0)
+mapbox_access_token = "pk.eyJ1IjoibWF6YXJpbW9ubyIsImEiOiJjanA5Y3IxaWsxeGtmM3dweDh5bjgydGFxIn0.3vrfsqZ_kGPGhi4_npruGg"
+
 
 app = dash.Dash(__name__)
 server = app.server 
@@ -412,31 +422,511 @@ app.layout = html.Div(children=[
                         html.H3('app.layout = html.Div()で中身を詰める！'),
                         html.H3('dash_html_componentsでhtml要素を触る！'),
                         html.H3('dash_core_componentsでグラフとかツールを触る！'),
-                        html.H3('dash_tableでデータをテーブルでみられる！')
+                        html.H3('dash_tableでデータをテーブルでみられる！'),
+                        html.H3('何故かdccだがmarkdownが使える！'),
                     ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 50, 'color': 'limegreen', 'marginTop': '10%'})
                     ])
                 ])           
             ]),
     #PAGE11
         dcc.Tab(label="DATA11", value="DATA11", style=tab_style, selected_style=tab_selected_style,         children=[
+                html.Div([
+                    html.Div([
+                        html.H3('Dashの使い方（２）')
+                    ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
+                #データの形のお話
+                    html.Div([
+                        html.Div([
+                            html.H3('その前に、ちょっとデータの形の話')
+                        ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%', 'color': 'skyblue'}),
+                        html.Div([
+                            html.H3('よく見るデータの形 Wide Form Data', style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%', 'color': 'limegreen'}),
+                            html.Div([
+                            dash_table.DataTable(
+                                id='wide-form-table',
+                                columns = [{'name': i, 'id': i} for i in dfcons.columns],
+                                data = dfcons.to_dict("rows"),
+                                sorting = True,
+                            )
+                            ], style = {'width': '80%', 'margin': '0 auto 0'}),
+                        html.Div([
+                            html.H3('可視化に使うデータの形 Long Form Data', style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'marginTop': '5%', 'color': 'limegreen'}),
+                            html.Div([
+                                dash_table.DataTable(
+                                    id = 'long-form-table',
+                                    columns = [{'name': i, 'id': i} for i in dflong.columns],
+                                    data = dflong.to_dict('rows'),
+                                    sorting = True
+                                )
+                            ], style = {'width': '30%', 'margin': '0 auto 0'})
+                        ]),
+                        ])
+                    ]),
+                # コールバックの話
+                    html.Div([
+                        html.Div([
+                            html.H3('Dashで最も重要なCallbackのお話')
+                        ], style = {'textAlign': 'Center', 'fontSize': '4rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
+                        html.Div([
+                            dcc.Markdown('''
+                                Dashをインタラクティブにするのに
+                                超重要なのがCallback！！！
+                                逆にこれを使わないと、普通のライブラリ
+                                を使っているのと同じといって、
+                                も良いと思える！！！
 
-            ]),
+                                ので、フォントサイズをここまでで
+                                一番大きくしました！
+                            ''')
+                        ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
+                # first callback
+                        html.Div([
+                            html.Div(
+                                html.H1('北海道のGDP、人口、一人あたりGDPの推移',
+                                    style = {'textAlign': 'center'})
+                                        ),
+                            dcc.Dropdown(
+                                id = 'dropdown-for-hokkaido',
+                                options = [{'label': i, 'value': i} for i in dfhokkaido.item.unique()],
+                                value = 'GDP'
+                                , style={'width': '40%', 'margin': '0 auto 0'}),
+                            dcc.Graph(
+                                id="hokkaidoGraph",
+                                style = {'width': '70%', 'margin': '0 auto 0'}
+                                )
+                                ]),
+                # comment to callback
+                        html.Div([
+                            dcc.Markdown('''
+                                このグラフのコードは以下のような感じになっています。
+
+                                import dash  
+                                import dash_core_components as dcc   
+                                import dash_html_components as html
+                                import plotly.graph_objs as go  
+                                import pandas as pd 
+
+                                # ①データ読み込み
+                                df = pd.read_csv('./data/longform.csv', index_col=0)
+                                dfhokkaido = df[df['area']=='北海道']
+
+                                app = dash.Dash(__name__)
+
+                                # ②表示作成
+                                app.layout = html.Div(children=[
+                                    html.Div(
+                                        html.H1('北海道のGDP、人口、一人あたりGDPの推移',
+                                        style = {'textAlign': 'center'})
+                                        ),
+                                    dcc.Dropdown(
+                                        id = 'dropdown-for-hokkaido',
+                                        options = [{'label': i, 'value': i} for i in dfhokkaido.item.unique()],
+                                        value = 'GDP',
+                                        style={'width': '40%', 'margin': '0 auto 0'}
+                                        ),
+                                    dcc.Graph(
+                                        id="hokkaidoGraph",
+                                        style = {'width': '70%', 'margin': '0 auto 0'}
+                                            )
+                                        ])
+
+                                    # ③コールバック作成
+                                    @app.callback(
+                                        dash.dependencies.Output('hokkaidoGraph', 'figure'),
+                                        [dash.dependencies.Input('dropdown-for-hokkaido', 'value')]
+                                        )
+                                    def update_graph(factor):
+                                        dff = dfhokkaido[dfhokkaido['item'] == factor]
+
+                                        return {
+                                            'data': [go.Scatter(
+                                                x = dff['year'],
+                                                y = dff['value']
+                                                )]
+                                            }
+
+                                    if __name__ == '__main__':
+                                        app.run_server(debug=True)
+
+                                    
+                                    30行ほどでこんなに複雑な処理ができてしまいます！！
+                                    他だったら、グラフ処理でこれくらい必要かと。
+
+                                    ドロップダウンなど要素選択のツールはたくさんあります。
+                                    https://dash.plot.ly/dash-core-components
+                            ''')
+                        ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
+                    #マウスアクション活用
+                        html.Div([
+                            html.Div([
+                                html.H3('マウスアクションを活用する')
+                            ], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
+                            html.Div([
+                                html.Div(
+                                    html.H1('北海道のGDP、人口、一人あたりGDPの推移',
+                                    style = {'textAlign': 'center'})
+                                        ),
+                            # 付け足し①
+                            html.Div(
+                                html.H1(id='add-hover-data')
+                                    ),
+                            dcc.RadioItems(
+                                id = 'dropdown-for-hokkaido1',
+                                options = [{'label': i, 'value': i} for i in dfhokkaido.item.unique()],
+                                value = 'GDP'
+                                ),
+                            dcc.Graph(
+                                id="hokkaidoGraph1",
+                                )
+                                ], style={'width': '75%', 'margin': '0 auto 0', 'padding': '3%'})
+                                ]),
+                            html.Div([
+                                dcc.Markdown('''
+                                    コードを見てみましょう
+
+                                    import dash  
+                                    import dash_core_components as dcc   
+                                    import dash_html_components as html
+                                    import plotly.graph_objs as go  
+                                    import pandas as pd 
+                                    import json 
+
+                                    df = pd.read_csv('./data/longform.csv', index_col=0)
+                                    dfhokkaido = df[df['area']=='北海道']
+
+                                    app = dash.Dash(__name__)
+
+                                    app.layout = html.Div(children=[
+                                        html.Div(
+                                            html.H1('北海道のGDP、人口、一人あたりGDPの推移',
+                                            style = {'textAlign': 'center'})
+                                                ),
+                                    # 付け足し①
+                                    html.Div(
+                                        html.H1(id='add-hover-data')
+                                        ),
+                                        dcc.RadioItems(
+                                            id = 'dropdown-for-hokkaido',
+                                            options = [{'label': i, 'value': i} for i in dfhokkaido.item.unique()],
+                                            value = 'GDP'
+                                            ),
+                                        dcc.Graph(
+                                            id="hokkaidoGraph",
+                                            )
+                                        ])
+
+                                    @app.callback(
+                                        dash.dependencies.Output('hokkaidoGraph', 'figure'),
+                                        [dash.dependencies.Input('dropdown-for-hokkaido', 'value')]
+                                        )
+                                    def update_graph(factor):
+                                        dff = dfhokkaido[dfhokkaido['item'] == factor]
+
+                                        return {
+                                            'data': [go.Scatter(
+                                                x = dff['year'],
+                                                y = dff['value']
+                                                )]
+                                            }
+
+                                    # 付けたし②
+                                    @app.callback(
+                                        dash.dependencies.Output('add-hover-data', 'children'),
+                                        [dash.dependencies.Input('hokkaidoGraph', 'hoverData')]
+                                        )
+                                    def return_hoverdata(hoverData):
+                                        return json.dumps(hoverData)
+
+
+                                    if __name__ == '__main__':
+                                        app.run_server(debug=True)
+                                    
+                                    先ほどのグラフをちょっと変更して、
+                                    マウスホバーで得られるデータを表示するようにしました。
+
+                                    付け足し1でh1要素を追加して、ここに
+                                    マウスホバーの情報を返すようになっています。
+
+                                    付け足し２でグラフ上で得られたデータを返す
+                                    処理を行っています。といっても、
+                                    json.dumps()で取得データを返すだけです。
+
+
+                                ''')
+                                ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
+                            # バブルグラフ
+                            html.Div([
+                                html.Div([
+                    html.Div([
+                        dcc.Graph(id = 'scatter-chart1',
+                        hoverData = {'points': [{'customdata': '大阪府'}]},
+                        ),
+                    dcc.Slider(
+                        id = 'slider-one1',
+                        min = df['year'].min(),
+                        max = df['year'].max(),
+                        marks = {i: '{}'.format(i) for i in range(int(df['year'].min()), int(df['year'].max())) if i % 2 == 1},
+                        value = 1955,
+                        )
+                        ], style={
+                            'display': 'inline-block',
+                            'width': '60%',
+                            }),
+                    html.Div([
+                        dcc.Graph(id='chart-one1'),
+                        dcc.Graph(id='chart-two1'),
+                        dcc.Graph(id='chart-three1'),
+                    ],style={
+                        'display': 'inline-block',
+                        'width': '39%'
+                        })
+                    ], style={'padding':'1%'}),
+                            ]),
+                html.Div([
+                    dcc.Markdown('''
+                        ツールとマウスホバーを使った合わせ技で
+                        上のようなものができます。
+
+                        グラフの下にあるスライダーで
+                        表示する年度を変更しながら、
+                        グラフ上の都道府県をホバーすると、
+                        ホバーした都道府県のヒストリカルなデータが
+                        みられます！
+                        
+                        import pandas as pd 
+                        import numpy as np   
+                        import dash  
+                        import dash_core_components as dcc 
+                        import dash_html_components as html  
+                        import plotly.graph_objs as go 
+                        import json 
+
+                        external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+                        app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+                        df = pd.read_csv('./data/longform.csv', index_col = 0)
+
+                        app.layout = html.Div([
+                            html.Div([
+                                html.H3('都道府県別人口とGDP,一人当たりGDP', style={
+                                        'textAlign': 'center'
+                                            }),
+                            html.Div([
+                                dcc.Graph(id = 'scatter-chart',
+                                    hoverData = {'points': [{'customdata': '大阪府'}]},
+                                    ),
+                                dcc.Slider(
+                                    id = 'slider-one',
+                                    min = df['year'].min(),
+                                    max = df['year'].max(),
+                                    marks = {i: '{}'.format(i) for i in range(int(df['year'].min()), int(df['year'].max())) if i % 2 == 1},
+                                    value = 1955,  
+                                        )
+                                    ], style={
+                                        'display': 'inline-block',
+                                        'width': '60%',
+                                        }),
+                                html.Div([
+                                    dcc.Graph(id='chart-one'),
+                                    dcc.Graph(id='chart-two'),
+                                    dcc.Graph(id='chart-three'),
+                                ],style={
+                                    'display': 'inline-block',
+                                    'width': '39%'
+                                    })
+                                    ])
+                                ])
+
+                        @app.callback(
+                        dash.dependencies.Output('scatter-chart', 'figure'),
+                        [dash.dependencies.Input('slider-one', 'value')]
+                        )
+                        def update_graph(selected_year):
+                            dff = df[df['year'] == selected_year]
+                            dffper = dff[dff['item']=='pergdp']
+                            dffgdp = dff[dff['item']== 'GDP']
+                            dffpop = dff[dff['item']== 'popu']
+
+                            return {
+                                'data': [go.Scatter(
+                                x = dffper[dffper['area']==i]['value'],
+                                y = dffgdp[dffgdp['area']==i]['value'],
+                                mode = 'markers',
+                                customdata = [i],
+                                marker={
+                                    'size' : dffpop[dffpop['area']==i]['value']/100,
+                                    'color': dffpop[dffpop['area']==i]['value']/10000,
+                                    }, 
+                                name=i,
+                                )for i in dff.area.unique()],
+                                'layout': {
+                                    'height': 900,
+                                    'xaxis': {
+                                    'type': 'log',
+                                    'title': '都道府県別一人当たりGDP(log scale)',
+                                    'range':[np.log(80), np.log(1200)]
+                                        },
+                                    'yaxis': {
+                                    'type':'log',
+                                    'title': '都道府県別GDP(log scale)',
+                                    'range':[np.log(80), np.log(8000)]
+                                        },
+                                    'hovermode': 'closest',
+                                    }
+                                    }
+
+                        def create_smallChart(dff, area, name):
+                                return {
+                                    'data':[go.Scatter(
+                                    x = dff['year'],
+                                    y = dff['value']
+                                    )],
+                                    'layout':{
+                                    'height': 300,
+                                    'title': '{}の{}データ'.format(area, name)
+                                    }
+                                    }
+
+
+
+                        @app.callback(
+                        dash.dependencies.Output('chart-one', 'figure'),
+                        [(dash.dependencies.Input('scatter-chart', 'hoverData'))]
+                        )
+                        def createGDP(hoverdata):
+                            areaName = hoverdata['points'][0]['customdata']
+                            dff　= df[df['area']==areaName]
+                            dff = dff[dff['item'] == 'GDP']
+                            return create_smallChart(dff, areaName, 'GDP')
+
+                        @app.callback(
+                        dash.dependencies.Output('chart-two', 'figure'),
+                        [(dash.dependencies.Input('scatter-chart', 'hoverData'))]
+                        )
+                        def createPerGDP(hoverdata):
+                            areaName = hoverdata['points'][0]['customdata']
+                            dff = df[df['area']==areaName]
+                            dff = dff[dff['item'] == 'pergdp']
+                            return create_smallChart(dff, areaName, 'pergdp')
+
+                        @app.callback(
+                        dash.dependencies.Output('chart-three', 'figure'),
+                        [(dash.dependencies.Input('scatter-chart', 'hoverData'))]
+                        )
+                        def createPopu(hoverdata):
+                            areaName = hoverdata['points'][0]['customdata']
+                            dff = df[df['area']==areaName]
+                            dff = dff[dff['item'] == 'popu']
+                            return create_smallChart(dff, areaName, 'popu')
+
+                        if __name__=="__main__":
+                            app.run_server(debug=True)
+
+                    ''')
+                ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
+            html.Div([
+                html.Div([
+                    html.H3(['マップもいける！'], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'})
+                ]),
+                dcc.Graph(
+                    id = 'kyoto-hotels',
+                    figure = {
+                        'data':[
+                        go.Scattermapbox(
+                        lat = dfkyoto[dfkyoto['age']== i]['ido'],
+                        lon = dfkyoto[dfkyoto['age']== i]['keido'],
+                        mode = 'markers',
+                        marker = dict(
+                        size=9
+                        ),
+                        text = dfkyoto[dfkyoto['age']== i]['hotel_name'],
+                        name = str(i),
+                        ) for i in dfkyoto['age'].unique()
+                        ],
+                        'layout':
+                        go.Layout(
+                            autosize=True,
+                            hovermode='closest',
+                            mapbox = dict(
+                            accesstoken=mapbox_access_token,
+                            bearing = 0,
+                            center = dict(
+                            lat=np.mean(dfkyoto['ido']),
+                            lon=np.mean(dfkyoto['keido'])
+                        ),
+                        pitch = 90,
+                        zoom=10,
+                    ),
+                    height=600
+                        )
+                    }
+                    )
+                    ]),
+                    html.Div([
+                        dcc.Markdown('''
+                        今回の利用例の場合、経度緯度のデータが
+                        あれば簡単にできる！
+
+                        df = pd.read_csv('mapdadta.csv', index_col=0)
+                        app = dash.Dash(__name__)
+                        app.layout = html.Div([dcc.Graph(
+                        id = 'kyoto-hotels',
+                        figure = {
+                            'data':[
+                                go.Scattermapbox(
+                                lat = df[df['age']== i]['ido'],
+                                lon = df[df['age']== i]['keido'],
+                                mode = 'markers',
+                                marker = dict(
+                                    size=9
+                                ),
+                                text = df[df['age']== i]['hotel_name'],
+                                name = str(i),
+                                ) for i in df['age'].unique()
+                                ],
+                            'layout':
+                                go.Layout(
+                                    autosize=True,
+                                    hovermode='closest',
+                                    mapbox = dict(
+                                        accesstoken=mapbox_access_token,
+                                        bearing = 0,
+                                        center = dict(
+                                            lat=np.mean(df['ido']),
+                                            lon=np.mean(df['keido'])
+                                            ),
+                                        pitch = 90,
+                                        zoom=10,
+                                        ),
+                                    height=600
+                                        )
+                                            }
+                                        )])])
+                                
+                        '''
+                        )
+                    ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'})
+                                ])
+                                ])
+                            ]),
     #PAGE12
         dcc.Tab(label="DATA12", value="DATA12", style=tab_style, selected_style=tab_selected_style,         children=[
-
-            ]),
-    #PAGE13
-        dcc.Tab(label="DATA13", value="DATA13", style=tab_style, selected_style=tab_selected_style,         children=[
-
-            ]),
-    #PAGE14
-        dcc.Tab(label="DATA14", value="DATA14", style=tab_style, selected_style=tab_selected_style,         children=[
-
+                    html.Div([
+                        html.H3('今日のまとめ')
+                    ], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
+                    html.Div([
+                        html.H3('このようにDashを使えば、かなりの量のデータを使った可視化が簡単にできる！'),
+                        html.H3('これを使えば、これまで以上にデータから情報を得ることが可能になる！'),
+                        html.H3('プレゼンテーションでも使えるのではないか？'),
+                        html.H3('もしそのような使い方ができるのであれば、多くの意見が得られるようになり、これまでにないデータの活用ができる！'),
+                        html.H3('Dashの難点・・カッコが多い！！！！')
+                    ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 50, 'color': 'limegreen', 'marginTop': '5%'})
             ]),
     ], style=tabs_styles)
 ])
 
-# Back To DATA4
+# Back To DATA9
 @app.callback(
     dash.dependencies.Output('scatter-chart', 'figure'),
     [dash.dependencies.Input('slider-one', 'value')]
@@ -522,6 +1012,131 @@ def createPopu(hoverdata):
     dff = df[df['area']==areaName]
     dff = dff[dff['item'] == 'popu']
     return create_smallChart(dff, areaName, 'popu')
+
+# first callback
+@app.callback(
+    dash.dependencies.Output('hokkaidoGraph', 'figure'),
+    [dash.dependencies.Input('dropdown-for-hokkaido', 'value')]
+)
+def update_graph(factor):
+    dff = dfhokkaido[dfhokkaido['item'] == factor]
+
+    return {
+        'data': [go.Scatter(
+            x = dff['year'],
+            y = dff['value']
+        )]
+    }
+
+@app.callback(
+    dash.dependencies.Output('hokkaidoGraph1', 'figure'),
+    [dash.dependencies.Input('dropdown-for-hokkaido1', 'value')]
+)
+def update_graph(factor):
+    dff = dfhokkaido[dfhokkaido['item'] == factor]
+
+    return {
+        'data': [go.Scatter(
+            x = dff['year'],
+            y = dff['value']
+        )]
+    }
+
+# 付けたし②
+@app.callback(
+    dash.dependencies.Output('add-hover-data', 'children'),
+    [dash.dependencies.Input('hokkaidoGraph1', 'hoverData')]
+)
+def return_hoverdata(hoverData):
+    return json.dumps(hoverData)
+
+
+
+# DATA11 CallBack
+@app.callback(
+    dash.dependencies.Output('scatter-chart1', 'figure'),
+    [dash.dependencies.Input('slider-one1', 'value')]
+)
+def update_graph(selected_year):
+    dff = df[df['year'] == selected_year]
+    dffper = dff[dff['item']=='pergdp']
+    dffgdp = dff[dff['item']== 'GDP']
+    dffpop = dff[dff['item']== 'popu']
+
+    return {
+        'data': [go.Scatter(
+            x = dffper[dffper['area']==i]['value'],
+            y = dffgdp[dffgdp['area']==i]['value'],
+            mode = 'markers',
+            customdata = [i],
+            marker={
+                'size' : dffpop[dffpop['area']==i]['value']/100,
+                'color': dffpop[dffpop['area']==i]['color'],
+            }, 
+            name=i,
+        )for i in dff.area.unique()],
+        'layout': {
+            'height': 800,
+            'title': '{}年の都道府県GDP、一人当たりGDP、人口（円の大きさ）'.format(selected_year),
+            'fontSize': "2rem",
+            'xaxis': {
+                'type': 'log',
+                'title': '都道府県別一人当たりGDP(log scale)',
+                'range':[np.log(80), np.log(1200)]
+            },
+            'yaxis': {
+                'type':'log',
+                'title': '都道府県別GDP(log scale)',
+                'range':[np.log(80), np.log(8000)]
+            },
+            'hovermode': 'closest',
+        }
+    }
+
+def create_smallChart(dff, area, name):
+    return {
+        'data':[go.Scatter(
+            x = dff['year'],
+            y = dff['value']
+        )],
+        'layout':{
+            'height': 300,
+            'title': '{}の{}データ'.format(area, name),
+        }
+    }
+
+
+
+@app.callback(
+    dash.dependencies.Output('chart-one1', 'figure'),
+    [(dash.dependencies.Input('scatter-chart1', 'hoverData'))]
+)
+def createGDP(hoverdata):
+    areaName = hoverdata['points'][0]['customdata']
+    dff = df[df['area']==areaName]
+    dff = dff[dff['item'] == 'GDP']
+    return create_smallChart(dff, areaName, 'GDP')
+
+@app.callback(
+    dash.dependencies.Output('chart-two1', 'figure'),
+    [(dash.dependencies.Input('scatter-chart1', 'hoverData'))]
+)
+def createPerGDP(hoverdata):
+    areaName = hoverdata['points'][0]['customdata']
+    dff = df[df['area']==areaName]
+    dff = dff[dff['item'] == 'pergdp']
+    return create_smallChart(dff, areaName, 'pergdp')
+
+@app.callback(
+    dash.dependencies.Output('chart-three1', 'figure'),
+    [(dash.dependencies.Input('scatter-chart1', 'hoverData'))]
+)
+def createPopu(hoverdata):
+    areaName = hoverdata['points'][0]['customdata']
+    dff = df[df['area']==areaName]
+    dff = dff[dff['item'] == 'popu']
+    return create_smallChart(dff, areaName, 'popu')
+
 
 
 if __name__ == '__main__':

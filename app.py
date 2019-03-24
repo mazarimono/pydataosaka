@@ -906,7 +906,38 @@ app.layout = html.Div(children=[
                                 
                         '''
                         )
-                    ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'})
+                    ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
+                    html.Div([
+                        html.Div([
+                        html.H3(['Webにあげるのも簡単！'], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
+                        ]),
+                        html.Div([
+                            dcc.Markdown([
+                                '''
+                                VPSにあげる方法とかはちょっとわからないが、
+                                herokuにあげるの簡単！
+
+                                app.pyファイルにコードを
+                                import os
+
+                                server = app.server
+
+                                ファイルを付け加える
+                                Procfile
+                                web: gunicorn app:server
+                                
+                                requirements.txt
+
+                                $ heroku create osaka　# ヘロクのアドレスを取る　https://osaka.herokuapp.com
+                                $ git add .
+                                $ git commit -u 'hogehoge'　
+                                $ git push heroku master    # ヘロクにプッシュ
+                                $ heroku ps: scale web:1  # 無料のヘロクで動かす 
+
+                                '''
+                            ]),
+                        ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
+                    ]),
                                 ])
                                 ])
                             ]),
@@ -920,7 +951,8 @@ app.layout = html.Div(children=[
                         html.H3('これを使えば、これまで以上にデータから情報を得ることが可能になる！'),
                         html.H3('プレゼンテーションでも使えるのではないか？'),
                         html.H3('もしそのような使い方ができるのであれば、多くの意見が得られるようになり、これまでにないデータの活用ができる！'),
-                        html.H3('Dashの難点・・カッコが多い！！！！')
+                        html.H3('Dashの難点・・カッコが多い！！！！'),
+                        html.H3('==> カッコが少ないしPythonやってるのに・・・')
                     ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 50, 'color': 'limegreen', 'marginTop': '5%'})
             ]),
     ], style=tabs_styles)

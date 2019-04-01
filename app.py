@@ -2,7 +2,7 @@ import dash
 import dash_core_components as dcc 
 import dash_html_components as html  
 import dash_table 
-import dash_cytoscape as cyto  
+# import dash_cytoscape as cyto  
 import plotly.graph_objs as go 
 import pandas as pd  
 import numpy as np 
@@ -1085,28 +1085,28 @@ app.layout = html.Div(children=[
                             ]),
                         ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
             ]),
-            html.Div([
-                html.Div([
-                    html.H3(['グラフもいける！'], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'})
-                ]),
-                html.Div([
-                        dcc.Dropdown(
-                            id='dropdown-update-layout',
-                            value='grid',
-                            clearable=False,
-                            options=[
-                            {'label': name.capitalize(), 'value': name}
-                            for name in ['grid', 'random', 'circle', 'cose', 'concentric']
-                            ], style={'width': '30%', 'margin':'0 auto 0'}
-                        ),
-                        cyto.Cytoscape(
-                            id='cytoscape-update-layout',
-                            layout={'name': 'grid'},
-                            style={'width': '80%', 'height': '700px', 'margin': '0 auto 0', 'padding': '5%'},
-                            elements=elements
-                            )
-                        ]),
-                    ]),
+            # html.Div([
+            #     html.Div([
+            #         html.H3(['グラフもいける！'], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'})
+            #     ]),
+            #     html.Div([
+            #             dcc.Dropdown(
+            #                 id='dropdown-update-layout',
+            #                 value='grid',
+            #                 clearable=False,
+            #                 options=[
+            #                 {'label': name.capitalize(), 'value': name}
+            #                 for name in ['grid', 'random', 'circle', 'cose', 'concentric']
+            #                 ], style={'width': '30%', 'margin':'0 auto 0'}
+            #             ),
+            #             cyto.Cytoscape(
+            #                 id='cytoscape-update-layout',
+            #                 layout={'name': 'grid'},
+            #                 style={'width': '80%', 'height': '700px', 'margin': '0 auto 0', 'padding': '5%'},
+            #                 elements=elements
+            #                 )
+            #             ]),
+            #         ]),
                 html.Div([
                     dcc.Markdown([
                         '''
@@ -1692,13 +1692,13 @@ def update_graph(n):
     }
 
 # CytoScape callback
-@app.callback(dash.dependencies.Output('cytoscape-update-layout', 'layout'),
-              [dash.dependencies.Input('dropdown-update-layout', 'value')])
-def update_layout(layout):
-    return {
-        'name': layout,
-        'animate': True
-    }
+# @app.callback(dash.dependencies.Output('cytoscape-update-layout', 'layout'),
+#               [dash.dependencies.Input('dropdown-update-layout', 'value')])
+# def update_layout(layout):
+#     return {
+#         'name': layout,
+#         'animate': True
+#     }
 
 # many data callback
 @app.callback(

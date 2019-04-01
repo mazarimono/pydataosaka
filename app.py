@@ -997,18 +997,18 @@ app.layout = html.Div(children=[
             html.Div([
                         html.H3('Dash使い方（３）')
                     ], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
-            html.Div([
-                html.Div([
-                    html.H3(['ライブアップデートもいける！'], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'})
-                ]),
-                html.Div([
-                    dcc.Graph(id="usdjpy"),
-                    dcc.Interval(
-                        id = 'interval_components',
-                        interval = 1000,
-                        )
-                ], style={'height': '30%', 'width': '80%', 'margin': '0 auto 0', 'textAlign': 'center'}),
-                ]),
+            # html.Div([
+            #     html.Div([
+            #         html.H3(['ライブアップデートもいける！'], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'})
+            #     ]),
+            #     html.Div([
+            #         dcc.Graph(id="usdjpy"),
+            #         dcc.Interval(
+            #             id = 'interval_components',
+            #             interval = 1000,
+            #             )
+            #     ], style={'height': '30%', 'width': '80%', 'margin': '0 auto 0', 'textAlign': 'center'}),
+            #     ]),
             html.Div([
                 html.Div([
                             dcc.Markdown([
@@ -1665,31 +1665,31 @@ def createPopu(hoverdata):
 
 # DATA12
 # RealTime Graph usd-jpy
-@app.callback(
-    dash.dependencies.Output('usdjpy', 'figure'),
-    [dash.dependencies.Input('interval_components', 'n_intervals')]
-)
-def update_graph(n):
-    t = datetime.now()
-    nowHour = t.hour
-    nowMinute = t.minute 
-    nowSecond = t.second 
+# @app.callback(
+#     dash.dependencies.Output('usdjpy', 'figure'),
+#     [dash.dependencies.Input('interval_components', 'n_intervals')]
+# )
+# def update_graph(n):
+#     t = datetime.now()
+#     nowHour = t.hour
+#     nowMinute = t.minute 
+#     nowSecond = t.second 
 
-    d = datetime(2016, 1, 5, nowHour+9, nowMinute, nowSecond)
-    period = timedelta(seconds = 120)
-    d1 = d - period 
-    dffjpy1 = dffjpy.loc['{}'.format(d1): '{}'.format(d), :]
+#     d = datetime(2016, 1, 5, nowHour+9, nowMinute, nowSecond)
+#     period = timedelta(seconds = 120)
+#     d1 = d - period 
+#     dffjpy1 = dffjpy.loc['{}'.format(d1): '{}'.format(d), :]
 
-    return {
-        'data': [go.Scatter(
-            x = dffjpy1.index,
-            y = dffjpy1['Bid']
-        )],
-        'layout':{
-            'height': 600,
-            'title': 'USD-JPY 1Second Charts'
-        }
-    }
+#     return {
+#         'data': [go.Scatter(
+#             x = dffjpy1.index,
+#             y = dffjpy1['Bid']
+#         )],
+#         'layout':{
+#             'height': 600,
+#             'title': 'USD-JPY 1Second Charts'
+#         }
+#     }
 
 # CytoScape callback
 # @app.callback(dash.dependencies.Output('cytoscape-update-layout', 'layout'),

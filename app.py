@@ -41,7 +41,7 @@ dflong = df.iloc[:15, :]
 
 dfhokkaido = df[df['area']=='北海道']
 dfpergdp = df[df.item=='pergdp']
-dffpergdp = dfpergdp[(dfpergdp.area == '北海道') | (dfpergdp.area == '東京都') | (dfpergdp.area=='千葉県') | (dfpergdp.area=='愛知県') | (dfpergdp.area=='大阪府') | (dfpergdp.area=='福岡県')
+dffpergdp = dfpergdp[(dfpergdp.area == '北海道') | (dfpergdp.area == '東京都') | (dfpergdp.area=='千葉県') | (dfpergdp.area=='愛知県') | (dfpergdp.area=='大阪府') | (dfpergdp.area=='福岡県')]
 
 dftable = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
 dfcons = pd.read_csv('./data/jp_consumer2014.csv', index_col=0)

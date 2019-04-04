@@ -121,6 +121,7 @@ app.layout = html.Div(children=[
                 ], style={'marginTop':'15%', 'textAlign': 'right', 
                 })
             ]),
+
     #PAGE2
         dcc.Tab(label="DATA2", value='DATA2', style=tab_style, selected_style=tab_selected_style,
             children=[
@@ -139,8 +140,21 @@ app.layout = html.Div(children=[
                     ], style = {'background': '#EEFFDD'})
                 ])
             ]),
-    #PAGE3
+
+        #DATA3
         dcc.Tab(label="DATA3", value='DATA3', style=tab_style, selected_style=tab_selected_style,
+        children=[
+            html.H3('Crypto Kitchenはじめました', style={'textAlign': 'Center', 'fontSize':'3rem','background': '#EEFFDD'}),
+            html.Div([
+                html.H3('ブロックチェーンの勉強会です  4/18木曜日　会場はここSOUさんです！'),
+                html.A(href="https://blockchainosaka.connpass.com/event/126285/", children=[html.H3("connpassから参加登録できます")]),
+                html.Img(src='https://cdn-ak.f.st-hatena.com/images/fotolife/m/mazarimono/20190403/20190403094253.png')]
+            , style={'fontSize': '2rem', 'textAlign': 'Center','color':'limegreen', 'padding': '2%', 'background': '#EEFFDD'})
+        ]
+        ),
+
+    #PAGE4
+        dcc.Tab(label="DATA4", value='DATA4', style=tab_style, selected_style=tab_selected_style,
             children=[
                 html.H3('今日話すこと', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
                 html.Div([
@@ -149,8 +163,8 @@ app.layout = html.Div(children=[
                     html.H3('３．じゃあそのDashってどうやって使うの？')
                 ], style={'textAlign': 'Center', 'fontSize':'3rem', 'marginTop': '10%', 'background': '#EEFFDD', 'color':'limegreen'})
             ]),
-    #PAGE4
-        dcc.Tab(label="DATA4", value="DATA4", style=tab_style, selected_style=tab_selected_style,         children=[
+    #PAGE5
+        dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
                 html.H3('データって何？', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
                 html.Div([
                 html.Img(src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mazarimono/20190315/20190315175525.png",style={'width': '25%', 'margin': '0 5% 0', 'display': 'inline'}),
@@ -162,8 +176,9 @@ app.layout = html.Div(children=[
                 ], style={'display': 'inline-block', 'fontSize': '3rem', 'color': 'limegreen'}),
                 ], style={'background': '#EEFFDD'}),
             ]),
-    #PAGE5
-        dcc.Tab(label="DATA5", value="DATA5", style=tab_style, selected_style=tab_selected_style,         children=[
+
+    #PAGE6
+        dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
                 html.H3('データを見る?', style={'textAlign': 'Center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
                 html.Div([
                         dash_table.DataTable(
@@ -175,14 +190,37 @@ app.layout = html.Div(children=[
                         )
                 ], style={'marginLeft':"15%", 'marginRight': '15%'})
             ]),
-    #PAGE6
-        dcc.Tab(label="DATA6", value="DATA6", style=tab_style, selected_style=tab_selected_style,         children=[
+
+    #PAGE7
+        dcc.Tab(label="DATA7", value="DATA7", style=tab_style, selected_style=tab_selected_style,         children=[
                 html.Div([
                     html.H3('都道府県別一人当たりGDP')
                 ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD'}),
                 html.Div([
+                html.Div([html.H1('通常のプレゼンでよくあるグラフ'),], style={'textAlign': 'Center'}),
                 dcc.Graph(
                     id='pergdpGraph',
+                    figure={
+                    'data': [
+                        go.Scatter(
+                            x = dffpergdp[dffpergdp['area'] == i]['year'],
+                            y = dffpergdp[dffpergdp['area'] == i]['value'],
+                            name = i,
+                            mode = 'lines'
+                        ) for i in dffpergdp.area.unique()
+                    ],
+                    'layout':go.Layout(
+                        xaxis= {'title': '年度'},
+                        yaxis= {'title': '一人当たりGDP'},
+                        height = 700,
+                    )
+                }
+                )
+                ], style ={'height': '80%', 'width':'80%','margin': '0 auto', 'padding': '5%','background': '#EEFFDD'}),
+                html.Div([
+                    html.Div([html.H1('普通のグラフで情報量を増やす'),], style={'textAlign': 'Center'}),
+                dcc.Graph(
+                    id='pergdpGraph2',
                     figure={
                     'data': [
                         go.Scatter(
@@ -199,10 +237,11 @@ app.layout = html.Div(children=[
                     )
                 }
                 )
-                ], style ={'height': '80%', 'background': '#EEFFDD'}), 
+                ], style ={'height': '80%', 'width':'80%','margin': '0 auto', 'padding': '5%','background': '#EEFFDD'}), 
             ]),
-    #PAGE7
-        dcc.Tab(label="DATA7", value="DATA7", style=tab_style, selected_style=tab_selected_style,         children=[
+
+    #PAGE8
+        dcc.Tab(label="DATA8", value="DATA8", style=tab_style, selected_style=tab_selected_style,         children=[
                 html.Div([
                     html.H3('データを情報化するときの問題点', style={'textAlign': 'center', 'fontSize':'3rem', 'background': '#EEFFDD'}),
                     html.Div([
@@ -214,12 +253,14 @@ app.layout = html.Div(children=[
                     'color': 'limegreen', 'padding': '1%'})
                 ])
             ]),
-    #PAGE8
-        dcc.Tab(label="DATA8", value="DATA8", style=tab_style, selected_style=tab_selected_style,         children=[
-                    html.H1('出来るよ！Dashなら！！', style={'textAlign': 'Center', 'fontSize': '3rem','marginTop': '15%', 'padding': '5%','background': '#EEFFDD', 'color': 'limegreen'})
-            ]),
+
     #PAGE9
         dcc.Tab(label="DATA9", value="DATA9", style=tab_style, selected_style=tab_selected_style,         children=[
+                    html.H1('出来るよ！Dashなら！！', style={'textAlign': 'Center', 'fontSize': '3rem','marginTop': '15%', 'padding': '5%','background': '#EEFFDD', 'color': 'limegreen'})
+            ]),
+
+    #PAGE10
+        dcc.Tab(label="DATA10", value="DATA10", style=tab_style, selected_style=tab_selected_style,         children=[
                     html.Div([
                         html.H3('都道府県別人口とGDP,一人当たりGDP', style={
                         'textAlign': 'center', 'fontSize':'2.5rem', 'background': '#EEFFDD'
@@ -251,8 +292,9 @@ app.layout = html.Div(children=[
                     ], style={'background': '#EEFFDD', 'padding':'1%'}),
                     ])
                 ]),
-    #PAGE10
-        dcc.Tab(label="DATA10", value="DATA10", style=tab_style, selected_style=tab_selected_style,         children=[
+
+    #PAGE11
+        dcc.Tab(label="DATA11", value="DATA11", style=tab_style, selected_style=tab_selected_style,         children=[
                 html.Div([
                     html.Div([
 
@@ -262,7 +304,7 @@ app.layout = html.Div(children=[
                         html.H3('DashはFlask, React, Plotlyで作られたフレームワーク'),
                         html.H3('Pythonで使える。グラフ部分はPlotly。'),
                         html.H3('グラフ部分がインタラクティブに作れる'),
-                        html.H3('ドキュメント　https://dash.plot.ly/')
+                        html.A(href='https://dash.plot.ly/', children=[html.H3('ドキュメント')])
                     ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 10, 'color': 'limegreen', 'marginTop': '5%'}),
                 #グラフ１
                     html.Div([
@@ -480,8 +522,9 @@ app.layout = html.Div(children=[
                     ])
                 ])           
             ]),
-    #PAGE11
-        dcc.Tab(label="DATA11", value="DATA11", style=tab_style, selected_style=tab_selected_style,         children=[
+
+    #PAGE12
+        dcc.Tab(label="DATA12", value="DATA12", style=tab_style, selected_style=tab_selected_style,         children=[
                 html.Div([
                     html.Div([
                         html.H3('Dashの使い方（２）')
@@ -706,7 +749,7 @@ app.layout = html.Div(children=[
 
                                 ''')
                                 ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
-                            # バブルグラフ
+                # バブルグラフ
                             html.Div([
                                 html.Div([
                     html.Div([
@@ -910,7 +953,7 @@ app.layout = html.Div(children=[
                         pitch = 90,
                         zoom=10,
                     ),
-                    height=600
+                    height=800
                         )
                     }
                     )
@@ -980,11 +1023,21 @@ app.layout = html.Div(children=[
                                 
                                 requirements.txt
 
+                                1. 普通にherokuにあげる
+
                                 $ heroku create osaka　# ヘロクのアドレスを取る　https://osaka.herokuapp.com
                                 $ git add .
                                 $ git commit -u 'hogehoge'　
                                 $ git push heroku master    # ヘロクにプッシュ
                                 $ heroku ps: scale web:1  # 無料のヘロクで動かす 
+
+                                2．herokuにgithubをつなぐ
+
+                                githubをherokuにつないで
+                                githubが更新されたら
+                                herokuで表示されるものも
+                                更新される。
+                                おススメ！！
 
                                 '''
                             ]),
@@ -993,8 +1046,9 @@ app.layout = html.Div(children=[
                                 ])
                                 ])
                             ]),
-    #PAGE12
-        dcc.Tab(label="DATA12", value="DATA12", style=tab_style, selected_style=tab_selected_style, children=[
+
+    #PAGE13
+        dcc.Tab(label="DATA13", value="DATA13", style=tab_style, selected_style=tab_selected_style, children=[
             html.Div([
                         html.H3('Dash使い方（３）')
                     ], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
@@ -1436,8 +1490,9 @@ app.layout = html.Div(children=[
                     ])
                 ], style={'padding': 30, 'fontSize': '2rem', 'background': '#EEFFDD'}),
                 ]),
-    #PAGE13
-        dcc.Tab(label="DATA13", value="DATA13", style=tab_style, selected_style=tab_selected_style,         children=[
+
+    #PAGE14
+        dcc.Tab(label="DATA14", value="DATA14", style=tab_style, selected_style=tab_selected_style,         children=[
                     html.Div([
                         html.H3('今日のまとめ')
                     ], style = {'textAlign': 'Center', 'fontSize': '2.5rem', 'background': '#EEFFDD', 'marginTop': '5%'}),
@@ -1446,8 +1501,10 @@ app.layout = html.Div(children=[
                         html.H3('これを使えば、これまで以上にデータから情報を得ることが可能になる！'),
                         html.H3('プレゼンテーションでも使えるのではないか？'),
                         html.H3('もしそのような使い方ができるのであれば、多くの意見が得られるようになり、これまでにないデータの活用ができる！'),
-                        html.H3('Dashの難点・・カッコが多い！！！！'),
-                        html.H3('まぁCSSの使い方なんかを覚えられるのは良い')
+                    html.Div([    
+                        html.H3('注意'),], style={"color": "red"}),
+                        html.H2('Dashの最新のバージョンは0.40.0になっていますが、これを使ってherokuにアップすると、とんでもない表示になります。'),
+                        html.H2('一先ず、0.39.0を使いましょう！(ローカルだと動く)')
                     ], style = {'textAlign': 'Center', 'fontSize': '2rem', 'background': '#EEFFDD', 'padding': 50, 'color': 'limegreen', 'marginTop': '5%'})
             ]),
     ], style=tabs_styles)
@@ -1737,7 +1794,7 @@ def update_graph(xaxis_column_name, yaxis_column_name,
                 'type': 'linear' if yaxis_type == 'Linear' else 'log'
             },
             margin={'l': 40, 'b': 30, 't': 10, 'r': 0},
-            height=450,
+            height=600,
             hovermode='closest'
         )
     }
@@ -1751,7 +1808,7 @@ def create_time_series(dffmany, axis_type, title):
             mode='lines+markers'
         )],
         'layout': {
-            'height': 225,
+            'height': 300,
             'margin': {'l': 20, 'b': 30, 'r': 10, 't': 10},
             'annotations': [{
                 'x': 0, 'y': 0.85, 'xanchor': 'left', 'yanchor': 'bottom',

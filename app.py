@@ -160,7 +160,8 @@ app.layout = html.Div(children=[
                 html.Div([
                     html.H3('１．データを見ることの重要性と問題点'),
                     html.H3('２．データをみんなで見るのにDash良いですよ'),
-                    html.H3('３．じゃあそのDashってどうやって使うの？')
+                    html.H3('３．じゃあそのDashってどうやって使うの？'),
+                    html.A(href='https://github.com/mazarimono/pydataosaka', children=[html.H3('本日のgithub')])
                 ], style={'textAlign': 'Center', 'fontSize':'3rem', 'marginTop': '10%', 'background': '#EEFFDD', 'color':'limegreen'})
             ]),
     #PAGE5
